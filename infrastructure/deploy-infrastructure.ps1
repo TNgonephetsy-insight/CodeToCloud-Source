@@ -9,7 +9,7 @@ $ghcrUser = "tngonephetsy-insight"
 
 az group create -l $location1 -n $resourcegroupName
 
-#Then create a CosmosDB
+#Create a CosmosDB
 az cosmosdb create --name $cosmosDBName `
 --resource-group $resourcegroupName `
 --locations regionName=$location1 failoverPriority=0 isZoneRedundant=False `
@@ -24,12 +24,18 @@ az appservice plan create --name $planName --resource-group $resourcegroupName -
 #Create a Azure Web App with NGINX container
 az webapp create --resource-group $resourcegroupName --plan $planName --name $webappName -i nginx
 
-$cdbConnectionString = "$(az cosmosdb keys list -n $cosmosDBName -g $resourceGroupName --type connection-strings --query "connectionStrings[?description=='Primary MongoDB Connection String'].connectionString" | tr -d '\n',' ','[',']','\"' | sed s/\?/contentdb\?/)"
+#Setup MongoDB connection string (Thanks to ADunn)
+$cdbConnectionString = az cosmosdb keys list -n $cosmosDBName -g $resourceGroupName --type connection-strings `
+     --query "connectionStrings[?description=='Primary MongoDB Connection String'].connectionString"
+$manipulate = $cdbConnectionString[1]
+$manipulate = $manipulate.Split("""")[1]
+$manipulate = $manipulate.Split("?")
+$cdbConnection = $manipulate[0] + "contentdb?" + $manipulate[1]
 
-#add 'MONGODB_CONNECTION' to web application setting
-az webapp config appsettings set -n $webappName -g $resourcegroupName --settings MONGODB_CONNECTION="$cdbConnectionString"
+#Add 'MONGODB_CONNECTION' to web application setting
+az webapp config appsettings set -n $webappName -g $resourcegroupName --settings MONGODB_CONNECTION="$cdbConnection"
 
-#container & private ghcr settings
+#Container & private ghcr settings
 az webapp config container set `
 --docker-registry-server-password $CR_PAT `
 --docker-registry-server-url https://ghcr.io `
@@ -40,6 +46,5 @@ az webapp config container set `
 --resource-group $resourcegroupName `
 --enable-app-service-storage true
 
-#MongoDB init step
-#run init container from ghcr to fill cosmos DB
-docker run -ti --rm -e MONGODB_CONNECTION="$cdbConnectionString" ghcr.io/$ghcrUser/fabrikam-init
+#Run init container from ghcr to populate MongoDB contents to the connected CosmosDB
+docker run -ti  -e MONGODB_CONNECTION="$cdbConnection" ghcr.io/$ghcrUser/fabrikam-init
