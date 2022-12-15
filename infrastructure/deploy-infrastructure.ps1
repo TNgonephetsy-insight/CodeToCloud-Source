@@ -1,14 +1,14 @@
 param
 (
-    [string] $studentprefix = "tst"
+    [string] $studentprefix = "trn"
 )
 
 $resourcegroupName = "fabmedical-rg-" + $studentprefix
 $cosmosDBName = "fabmedical-cdb-" + $studentprefix
 $webappName = "fabmedical-web-" + $studentprefix
 $planName = "fabmedical-plan-" + $studentprefix
-$location1 = "westeurope"
-$location2 = "northeurope"
+$location1 = "eastus"
+$location2 = "westus"
 $appInsights = "fabmedicalai-" + $studentsuffix
 
 #First create a group
@@ -20,7 +20,8 @@ az cosmosdb create --name $cosmosDBName `
 --locations regionName=$location1 failoverPriority=0 isZoneRedundant=False `
 --locations regionName=$location2 failoverPriority=1 isZoneRedundant=True `
 --enable-multiple-write-locations `
---kind MongoDB
+--kind MongoDB `
+--server-version 4.0
 
 #Create a Azure App Service Plan
 az appservice plan create --name $planName --resource-group $resourcegroupName --sku S1 --is-linux
