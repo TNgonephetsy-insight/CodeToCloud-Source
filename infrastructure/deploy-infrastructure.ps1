@@ -9,7 +9,7 @@ $webappName = "fabmedical-web-" + $studentprefix
 $planName = "fabmedical-plan-" + $studentprefix
 $location1 = "eastus"
 $location2 = "westus"
-$appInsights = "fabmedicalai-" + $studentsuffix
+$appInsights = "fabmedicalai-" + $studentprefix
 
 #First create a group
 $rg = az group create --name $resourcegroupName --location $location1 | ConvertFrom-Json 
