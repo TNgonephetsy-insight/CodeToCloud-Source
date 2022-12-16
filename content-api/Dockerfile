@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 EXPOSE 3001
 ENV MONGODB_CONNECTION=mongodb://mongo:27017/contentdb
 
-FROM node:dubnium-alpine AS build
+FROM node:dubnium AS build
 WORKDIR /usr/src/app
 
 # Install app dependencies
