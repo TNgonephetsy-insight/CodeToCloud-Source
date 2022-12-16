@@ -1,0 +1,35 @@
+name: Docker Compose Build and Deploy
+
+on:
+  push:
+    branches:
+      - '**'
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log into GitHub Container Registry
+        run: echo "${{ secrets.CR_PAT }}" | docker login https://ghcr.io -u ${{ github.actor }} --password-stdin
+      
+      # Docker compose build & push
+      - name: Build and Push image
+        run: |
+          docker-compose -f docker-compose.yml -f build.docker-compose.yml build
+          docker-compose -f docker-compose.yml -f build.docker-compose.yml push     
+      
+      # Azure login w/credentials
+      - name: Login on Azure CLI
+        uses: azure/login@v1.1
+        with:
+          creds: ${{secrets.AZURE_CREDENTIALS}}
+
+      # Deploying infrastructure
+      - name: Deploy Infrastructure
+        shell: pwsh
+        env:
+          CR_PAT: ${{ secrets.CR_PAT }}        
+        run: |
+          .\infrastructure\deploy-infrastructure.ps1 -studentprefix trn
