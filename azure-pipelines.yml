@@ -39,6 +39,7 @@ stages:
           deploy:
             steps:
               - checkout: self
+              - powershell: (gc .\docker-compose.yml) -replace ':latest',':$(Build.BuildNumber)' | set-content .\docker-compose.yml
               - task: AzureCLI@2
                 inputs:
                   azureSubscription: 'Fabrikam-Azure'
