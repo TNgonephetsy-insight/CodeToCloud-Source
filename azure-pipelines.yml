@@ -1,5 +1,8 @@
-steps:
-- checkout: self
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
 
 stages:
   - stage: build
