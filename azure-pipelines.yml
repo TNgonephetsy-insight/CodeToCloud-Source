@@ -16,3 +16,31 @@ steps:
     additionalDockerComposeFiles: 'build.docker-compose.yml'
     action: 'Push services'
     additionalImageTags: '$(Build.BuildNumber)'
+
+stages:
+  - stage: build
+    jobs:
+    - job: 'BuildAndpublish'
+      displayName: 'Build and Publish'
+      steps:
+      - checkout: self
+      - task: DockerCompose@0
+        inputs:
+          containerregistrytype: 'Container Registry'
+          dockerRegistryEndpoint: 'GitHub Container Registry'
+          dockerComposeFile: '**/docker-compose.yml'
+          additionalDockerComposeFiles: 'build.docker-compose.yml'
+          action: 'Build services'
+          additionalImageTags: '$(Build.BuildNumber)'
+
+      - task: DockerCompose@0
+        inputs:
+          containerregistrytype: 'Container Registry'
+          dockerRegistryEndpoint: 'GitHub Container Registry'
+          dockerComposeFile: '**/docker-compose.yml'
+          additionalDockerComposeFiles: 'build.docker-compose.yml'
+          action: 'Push services'
+          additionalImageTags: '$(Build.BuildNumber)'
+  
+  - stage: DeployProd
+    dependsOn: build
