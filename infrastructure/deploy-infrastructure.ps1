@@ -54,7 +54,6 @@ az webapp config container set `
 --docker-registry-server-url https://ghcr.io `
 --docker-registry-server-user notapplicable `
 --docker-registry-server-password $($env:CR_PAT) `
---multicontainer-config-file ../docker-compose.yml `
 --multicontainer-config-type COMPOSE `
 --name $webappName `
 --resource-group $resourcegroupName `
