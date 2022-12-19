@@ -8,7 +8,7 @@ $cosmosDBName = "fabmedical-cdb-" + $studentprefix
 $webappName = "fabmedical-web-" + $studentprefix
 $planName = "fabmedical-plan-" + $studentprefix
 $location1 = "eastus"
-$location2 = "eastus2"
+$location2 = "westus3"
 $appInsights = "fabmedicalai-" + $studentprefix
 $ghcrUser = "tngonephetsy-insight"
 
