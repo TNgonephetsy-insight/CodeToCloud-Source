@@ -2,7 +2,7 @@ name: Docker Compose Build and Deploy
 
 on:
   push:
-    branches:
+    branches-ignore:
       - '**'
       
 jobs:
