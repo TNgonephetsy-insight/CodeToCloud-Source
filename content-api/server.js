@@ -6,7 +6,7 @@ const config = require('./config/config');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
 
-const port = 3001;
+const port = process.env.PORT || 3001;
 mongoose.connect(config.appSettings.db, { useNewUrlParser: true, useUnifiedTopology: true }, function (err) {
     if (err) {
         console.error(chalk.red('Could not connect to MongoDB!'));
