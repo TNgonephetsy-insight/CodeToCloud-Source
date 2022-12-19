@@ -9,7 +9,7 @@ $webappName = "fabmedical-web-" + $studentprefix
 $planName = "fabmedical-plan-" + $studentprefix
 $location1 = "eastus"
 $location2 = "westus3"
-$appInsights = "fabmedicalai-" + $studentprefix
+$appInsights = "fabmedical-ai-" + $studentprefix
 $ghcrUser = "tngonephetsy-insight"
 
 #create Resource Group
